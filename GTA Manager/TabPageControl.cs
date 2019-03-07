@@ -84,6 +84,13 @@ namespace GTA_Manager
                     break;
             }
 
+            FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
+            fileSystemWatcher.Path = directory;
+            fileSystemWatcher.Filter = "*.*";
+            fileSystemWatcher.Created += onDirectoryChange;
+            fileSystemWatcher.Deleted += onDirectoryChange;
+            fileSystemWatcher.EnableRaisingEvents = true;
+
             updateList();
         }
 
@@ -96,8 +103,8 @@ namespace GTA_Manager
             }
             catch
             {
-                listBoxEnabled.Invoke((MethodInvoker)delegate { listBoxEnabled.Items.Clear(); });
-                listBoxDisabled.Invoke((MethodInvoker)delegate { listBoxDisabled.Items.Clear(); });
+                Invoke((MethodInvoker)delegate { listBoxEnabled.Items.Clear(); });
+                Invoke((MethodInvoker)delegate { listBoxDisabled.Items.Clear(); });
             }
 
             foreach (string file in Directory.GetFiles(directory))
@@ -116,7 +123,7 @@ namespace GTA_Manager
                             }
                             catch
                             {
-                                listBoxDisabled.Invoke((MethodInvoker)delegate { listBoxDisabled.Items.Add(fileName.Replace(directory, "")); });
+                                Invoke((MethodInvoker)delegate { listBoxDisabled.Items.Add(fileName.Replace(directory, "")); });
                             }
                         }
                         else
@@ -127,19 +134,12 @@ namespace GTA_Manager
                             }
                             catch
                             {
-                                listBoxEnabled.Invoke((MethodInvoker)delegate { listBoxEnabled.Items.Add(fileName.Replace(directory, "")); });
+                                Invoke((MethodInvoker)delegate { listBoxEnabled.Items.Add(fileName.Replace(directory, "")); });
                             }
                         }
                     }
                 }
             }
-
-            FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
-            fileSystemWatcher.Path = directory;
-            fileSystemWatcher.Filter = "*.*";
-            fileSystemWatcher.Created += onDirectoryChange;
-            fileSystemWatcher.Deleted += onDirectoryChange;
-            fileSystemWatcher.EnableRaisingEvents = true;
         }
 
         private void onDirectoryChange(object sender, FileSystemEventArgs e)
