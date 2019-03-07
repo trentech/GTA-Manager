@@ -334,35 +334,35 @@ namespace GTA_Manager
 
         private void tabControl_Selected(object sender, TabControlEventArgs e)
         {
-            string path = new Config().getSetting("Directory");
+            //string path = new Config().getSetting("Directory");
 
-            if (tabControl.SelectedTab.Name.Equals("tabPageScriptHook"))
-            {
-                if (Directory.Exists(path + @"asi\"))
-                {
-                    textBoxDirectory.Text = path + @"asi\";
-                }
-                else
-                {
-                    textBoxDirectory.Text = path;
-                }
-            }
-            else if (tabControl.SelectedTab.Name.Equals("tabPageScriptHookDotNet"))
-            {
-                textBoxDirectory.Text = path + @"scripts\";
-            }
-            else if (tabControl.SelectedTab.Name.Equals("tabPageRage"))
-            {
-                textBoxDirectory.Text = path + @"Plugins\";
-            }
-            else if (tabControl.SelectedTab.Name.Equals("tabPageLua"))
-            {
-                textBoxDirectory.Text = path + @"scripts\addins\";
-            }
-            else if (tabControl.SelectedTab.Name.Equals("tabPageLSPDFR"))
-            {
-                textBoxDirectory.Text = path + @"Plugins\LSPDFR\";
-            }
+            //if (tabControl.SelectedTab.Name.Equals("tabPageScriptHook"))
+            //{
+            //    if (Directory.Exists(path + @"asi\"))
+            //    {
+            //        textBoxDirectory.Text = path + @"asi\";
+            //    }
+            //    else
+            //    {
+            //        textBoxDirectory.Text = path;
+            //    }
+            //}
+            //else if (tabControl.SelectedTab.Name.Equals("tabPageScriptHookDotNet"))
+            //{
+            //    textBoxDirectory.Text = path + @"scripts\";
+            //}
+            //else if (tabControl.SelectedTab.Name.Equals("tabPageRage"))
+            //{
+            //    textBoxDirectory.Text = path + @"Plugins\";
+            //}
+            //else if (tabControl.SelectedTab.Name.Equals("tabPageLua"))
+            //{
+            //    textBoxDirectory.Text = path + @"scripts\addins\";
+            //}
+            //else if (tabControl.SelectedTab.Name.Equals("tabPageLSPDFR"))
+            //{
+            //    textBoxDirectory.Text = path + @"Plugins\LSPDFR\";
+            //}
         }
 
         private void comboBoxLang_SelectionChangeCommitted(object sender, EventArgs e)
@@ -467,6 +467,7 @@ namespace GTA_Manager
                 textBoxDirectory.Text = directory;
                 textBoxDirectory.ForeColor = Color.Black;
 
+                tabControl.Controls.Clear();
                 initTabs();
             }
         }
