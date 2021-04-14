@@ -70,12 +70,31 @@ namespace GTA_Manager
 
         public void addDisabled(string key, string value)
         {
-            disabled[key] = disabled[key] + "," + value;
+            List<string> list;
+            if (disabled[key] == null)
+            {
+                list = new List<string>();
+            } else
+            {
+                list = disabled[key].Split(',').ToList();
+            }
+
+            list.Add(value);
+
+            disabled[key] = string.Join(",", list);
         }
 
         public void removeDisabled(string key, string value)
         {
-            List<string> list = disabled[key].Split(',').ToList();
+            List<string> list;
+            if (disabled[key] == null)
+            {
+                list = new List<string>();
+            }
+            else
+            {
+                list = disabled[key].Split(',').ToList();
+            }
 
             list.Remove(value);
 

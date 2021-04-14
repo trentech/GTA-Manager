@@ -236,7 +236,19 @@ namespace GTA_Manager
                 foreach (string text in array2)
                 {
                     string fileName = Path.GetFileName(text);
-                    File.Copy(text, directory + fileName);
+
+                    if(File.Exists(directory + fileName))
+                    {
+                        DialogResult result = MessageBox.Show(fileName + "already exists. Overwrite?", "Overwrite File?", MessageBoxButtons.YesNo);
+
+                        if(result.Equals(DialogResult.Yes))
+                        {
+                            File.Copy(text, directory + fileName);
+                        }
+                    } else
+                    {
+                        File.Copy(text, directory + fileName);
+                    }                
                 }
             }
         }
