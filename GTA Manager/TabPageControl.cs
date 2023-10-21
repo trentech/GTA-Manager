@@ -17,6 +17,7 @@ namespace GTA_Manager
             DOTNET,
             RAGE,
             LUA,
+            LUALEGACY,
             LSPDFR
         }
 
@@ -75,7 +76,18 @@ namespace GTA_Manager
                     extensions.Add(".dll");
                     break;
                 case Type.LUA:
-                    directory = directoryName + @"scripts\addins\";
+                    directory = directoryName + @"scripts\ScriptsDir-Lua\";
+                    extensions.Add(".lua");
+                    break;
+                case Type.LUALEGACY:
+                    if (Directory.Exists(directoryName + @"scripts\ScriptsDir-Lua\"))
+                    {
+                        directory = directoryName + @"scripts\ScriptsDir-Lua\Modules\";
+                    }
+                    else
+                    {
+                        directory = directoryName + @"scripts\addins\";
+                    }
                     extensions.Add(".lua");
                     break;
                 case Type.LSPDFR:

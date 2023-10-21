@@ -24,6 +24,7 @@ namespace GTA_Manager
         private TabPage tabPageScriptHookDotNet;
         private TabPage tabPageRage;
         private TabPage tabPageLua;
+        private TabPage tabPageLuaLegacy;
         private TabPage tabPageLSPDFR;
 
         /// <summary>

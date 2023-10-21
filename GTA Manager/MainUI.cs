@@ -17,6 +17,7 @@ namespace GTA_Manager
         private TabPageControl tabScriptHookDotNet;
         private TabPageControl tabRage;
         private TabPageControl tabLua;
+        private TabPageControl tabLuaLegacy;
         private TabPageControl tabLSPDFR;
 
         public MainUI()
@@ -111,7 +112,7 @@ namespace GTA_Manager
                 tabControl.Controls.Add(tabPageScriptHookDotNet);
             }
 
-            if (Directory.Exists(config.getSetting("Directory") + @"scripts\addins\"))
+            if (Directory.Exists(config.getSetting("Directory") + @"scripts\ScriptsDir-Lua\"))
             {
                 tabPageLua = new TabPage();
                 tabPageLua.Location = new Point(0, 0);
@@ -124,6 +125,31 @@ namespace GTA_Manager
                 tabLua.init(TabPageControl.Type.LUA);
                 tabPageLua.Controls.Add(tabLua);
                 tabControl.Controls.Add(tabPageLua);
+
+                tabPageLuaLegacy = new TabPage();
+                tabPageLuaLegacy.Location = new Point(0, 0);
+                tabPageLuaLegacy.Name = "tabPageLuaLegacy";
+                tabPageLuaLegacy.Text = "LuaLegacy";
+                tabPageLuaLegacy.Size = new Size(200, 100);
+                tabPageLuaLegacy.TabIndex = 3;
+                tabPageLuaLegacy.UseVisualStyleBackColor = true;
+                tabLuaLegacy = new TabPageControl();
+                tabLuaLegacy.init(TabPageControl.Type.LUALEGACY);
+                tabPageLuaLegacy.Controls.Add(tabLuaLegacy);
+                tabControl.Controls.Add(tabPageLuaLegacy);
+            } else if (Directory.Exists(config.getSetting("Directory") + @"scripts\addins\"))
+            {
+                tabPageLuaLegacy = new TabPage();
+                tabPageLuaLegacy.Location = new Point(0, 0);
+                tabPageLuaLegacy.Name = "tabPageLuaLegacy";
+                tabPageLuaLegacy.Text = "LuaLegacy";
+                tabPageLuaLegacy.Size = new Size(200, 100);
+                tabPageLuaLegacy.TabIndex = 3;
+                tabPageLuaLegacy.UseVisualStyleBackColor = true;
+                tabLuaLegacy = new TabPageControl();
+                tabLuaLegacy.init(TabPageControl.Type.LUA);
+                tabPageLuaLegacy.Controls.Add(tabLuaLegacy);
+                tabControl.Controls.Add(tabPageLuaLegacy);
             }
 
             if (Directory.Exists(config.getSetting("Directory") + @"Plugins\"))
@@ -133,7 +159,7 @@ namespace GTA_Manager
                 tabPageRage.Name = "tabPageRage";
                 tabPageRage.Text = "Rage Plugin Hook";
                 tabPageRage.Size = new Size(200, 100);
-                tabPageRage.TabIndex = 3;
+                tabPageRage.TabIndex = 4;
                 tabPageRage.UseVisualStyleBackColor = true;
                 tabRage = new TabPageControl();
                 tabRage.init(TabPageControl.Type.RAGE);
@@ -148,7 +174,7 @@ namespace GTA_Manager
                 tabPageLSPDFR.Name = "tabPageLSPDFR";
                 tabPageLSPDFR.Text = "LSPDFR";
                 tabPageLSPDFR.Size = new Size(200, 100);
-                tabPageLSPDFR.TabIndex = 4;
+                tabPageLSPDFR.TabIndex = 5;
                 tabPageLSPDFR.UseVisualStyleBackColor = true;
                 tabLSPDFR = new TabPageControl();
                 tabLSPDFR.init(TabPageControl.Type.LSPDFR);
@@ -176,6 +202,10 @@ namespace GTA_Manager
             if (tabControl.SelectedTab.Name.Equals("tabPageLua"))
             {
                 return tabLua;
+            }
+            if (tabControl.SelectedTab.Name.Equals("tabPageLuaLegacy"))
+            {
+                return tabLuaLegacy;
             }
             if (tabControl.SelectedTab.Name.Equals("tabPageLSPDFR"))
             {
