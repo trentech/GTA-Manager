@@ -15,10 +15,10 @@ namespace GTA_Manager
 
         private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            Config config = new Config();
+            Config config = Config.Get();
 
-            config.setSetting("Language", comboBox1.SelectedIndex.ToString());
-            config.save();
+            config.Settings.Language = comboBox1.SelectedIndex;
+            config.Save();
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo(Program.getRegionCode());
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(Program.getRegionCode());

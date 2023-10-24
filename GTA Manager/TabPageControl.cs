@@ -1,7 +1,6 @@
 ﻿using GTA_Manager.Properties;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,15 +10,6 @@ namespace GTA_Manager
 {
     public partial class TabPageControl : UserControl
     {
-        public enum Type
-        {
-            ASI,
-            DOTNET,
-            RAGE,
-            LUA,
-            LUALEGACY,
-            LSPDFR
-        }
 
         public TabPageControl()
         {
@@ -50,7 +40,7 @@ namespace GTA_Manager
             this.type = type;
             Text = type.ToString();
 
-            string directoryName = new Config().getSetting("Directory");
+            string directoryName = Config.Get().Settings.Directory;
 
             switch (type)
             {
@@ -127,7 +117,7 @@ namespace GTA_Manager
                 {
                     if (fileName.Contains(extension))
                     {
-                        if (new Config().getDisabled(type.ToString()).Contains(file.Replace(directory, "")))
+                        if (Config.Get().DisabledItems.Contains(type, file.Replace(directory, "")))
                         {
                             try
                             {
@@ -177,14 +167,14 @@ namespace GTA_Manager
 
                 if (processesByName.Length == 0)
                 {
-                    Config config = new Config();
+                    Config config = Config.Get();
 
                     foreach (string item in list)
                     {
-                        config.removeDisabled(type.ToString(), item);
-                        config.save();
+                        config.DisabledItems.Remove(type, item);
+                        config.Save();
 
-                        if (type.Equals(Type.ASI) && !Boolean.Parse(config.getSetting("Online")))
+                        if (type.Equals(Type.ASI) && !config.Settings.Online)
                         {
                             Launcher.enableMod(type, item);
                         }
@@ -216,12 +206,13 @@ namespace GTA_Manager
 
                 if (processesByName.Length == 0)
                 {
-                    Config config = new Config();
+                    Config config = Config.Get();
 
                     foreach (string item in list)
                     {
-                        config.addDisabled(type.ToString(), item);
-                        config.save();
+                        config.DisabledItems.Add(type, item);
+
+                        config.Save();
 
                         Launcher.disableMod(type, item);
 

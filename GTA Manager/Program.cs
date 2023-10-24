@@ -20,7 +20,7 @@ namespace GTA_Manager
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (Boolean.Parse(new Config().getSetting("First")))
+            if (Config.Get().Settings.First)
             {
                 StartUI startUI = new StartUI();
                 CenterToScreen(startUI);
@@ -41,7 +41,7 @@ namespace GTA_Manager
 
         public static string getRegionCode()
         {
-            switch (Int32.Parse(new Config().getSetting("Language")))
+            switch (Config.Get().Settings.Language)
             {
                 case 0:
                     return "en-US";

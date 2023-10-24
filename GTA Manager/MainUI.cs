@@ -1,7 +1,6 @@
 ﻿using GTA_Manager.Properties;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -28,10 +27,10 @@ namespace GTA_Manager
 
         private void init()
         {
-            Config config = new Config();
+            Config config = Config.Get();
 
             labelVersion.Text += Assembly.GetCallingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetCallingAssembly().GetName().Version.ToString().LastIndexOf("."));
-            comboBoxLang.SelectedIndex = Int32.Parse(config.getSetting("Language"));
+            comboBoxLang.SelectedIndex = config.Settings.Language;
 
             buttonAdd.Text = Language.buttonAdd;
             buttonRemove.Text = Language.buttonRemove;
@@ -40,7 +39,7 @@ namespace GTA_Manager
             buttonBrowse.Text = Language.buttonBrowse;
             comboBoxMode.Items.AddRange(new string[] { Language.comboBoxOnline, Language.comboBoxOffline });
 
-            if (Boolean.Parse(config.getSetting("First")))
+            if (config.Settings.First)
             {
                 DialogResult dialogResult = MessageBox.Show(Language.MessageShortcut, Language.TitleShortcut, MessageBoxButtons.YesNo);
 
@@ -49,15 +48,14 @@ namespace GTA_Manager
                     createShortcut();
                 }
 
-                config.setSetting("First", "False");
-
-                config.save();
+                config.Settings.First = false;
+                config.Save();
             }
 
-            if (!Boolean.Parse(config.getSetting("Online")))
+            if (!config.Settings.Online)
             {
                 comboBoxMode.SelectedIndex = 1;
-                checkBoxRage.Checked = Boolean.Parse(config.getSetting("Rage"));
+                checkBoxRage.Checked = config.Settings.Rage;
             }
             else
             {
@@ -68,9 +66,9 @@ namespace GTA_Manager
                 checkBoxRage.Enabled = false;            
             }
 
-            if (!config.getSetting("Directory").Equals("") && File.Exists(config.getSetting("Directory") + "GTA5.exe"))
+            if (File.Exists(config.Settings.Directory + "GTA5.exe"))
             {
-                textBoxDirectory.Text = config.getSetting("Directory");
+                textBoxDirectory.Text = config.Settings.Directory;
                 textBoxDirectory.ForeColor = Color.Black;
 
                 initTabs();
@@ -91,13 +89,13 @@ namespace GTA_Manager
             tabPageScriptHook.TabIndex = 0;
             tabPageScriptHook.UseVisualStyleBackColor = true;
             tabScriptHook = new TabPageControl();
-            tabScriptHook.init(TabPageControl.Type.ASI);
+            tabScriptHook.init(Type.ASI);
             tabPageScriptHook.Controls.Add(tabScriptHook);
             tabControl.Controls.Add(tabPageScriptHook);
 
-            Config config = new Config();
+            Config config = Config.Get();
 
-            if (Directory.Exists(config.getSetting("Directory") + @"scripts\"))
+            if (Directory.Exists(config.Settings.Directory + @"scripts\"))
             {
                 tabPageScriptHookDotNet = new TabPage();
                 tabPageScriptHookDotNet.Location = new Point(0, 0);
@@ -107,12 +105,12 @@ namespace GTA_Manager
                 tabPageScriptHookDotNet.TabIndex = 1;
                 tabPageScriptHookDotNet.UseVisualStyleBackColor = true;
                 tabScriptHookDotNet = new TabPageControl();
-                tabScriptHookDotNet.init(TabPageControl.Type.DOTNET);
+                tabScriptHookDotNet.init(Type.DOTNET);
                 tabPageScriptHookDotNet.Controls.Add(tabScriptHookDotNet);
                 tabControl.Controls.Add(tabPageScriptHookDotNet);
             }
 
-            if (Directory.Exists(config.getSetting("Directory") + @"scripts\ScriptsDir-Lua\"))
+            if (Directory.Exists(config.Settings.Directory + @"scripts\ScriptsDir-Lua\"))
             {
                 tabPageLua = new TabPage();
                 tabPageLua.Location = new Point(0, 0);
@@ -122,7 +120,7 @@ namespace GTA_Manager
                 tabPageLua.TabIndex = 2;
                 tabPageLua.UseVisualStyleBackColor = true;
                 tabLua = new TabPageControl();
-                tabLua.init(TabPageControl.Type.LUA);
+                tabLua.init(Type.LUA);
                 tabPageLua.Controls.Add(tabLua);
                 tabControl.Controls.Add(tabPageLua);
 
@@ -134,10 +132,10 @@ namespace GTA_Manager
                 tabPageLuaLegacy.TabIndex = 3;
                 tabPageLuaLegacy.UseVisualStyleBackColor = true;
                 tabLuaLegacy = new TabPageControl();
-                tabLuaLegacy.init(TabPageControl.Type.LUALEGACY);
+                tabLuaLegacy.init(Type.LUALEGACY);
                 tabPageLuaLegacy.Controls.Add(tabLuaLegacy);
                 tabControl.Controls.Add(tabPageLuaLegacy);
-            } else if (Directory.Exists(config.getSetting("Directory") + @"scripts\addins\"))
+            } else if (Directory.Exists(config.Settings.Directory + @"scripts\addins\"))
             {
                 tabPageLuaLegacy = new TabPage();
                 tabPageLuaLegacy.Location = new Point(0, 0);
@@ -147,12 +145,12 @@ namespace GTA_Manager
                 tabPageLuaLegacy.TabIndex = 3;
                 tabPageLuaLegacy.UseVisualStyleBackColor = true;
                 tabLuaLegacy = new TabPageControl();
-                tabLuaLegacy.init(TabPageControl.Type.LUA);
+                tabLuaLegacy.init(Type.LUA);
                 tabPageLuaLegacy.Controls.Add(tabLuaLegacy);
                 tabControl.Controls.Add(tabPageLuaLegacy);
             }
 
-            if (Directory.Exists(config.getSetting("Directory") + @"Plugins\"))
+            if (Directory.Exists(config.Settings.Directory + @"Plugins\"))
             {
                 tabPageRage = new TabPage();
                 tabPageRage.Location = new Point(0, 0);
@@ -162,12 +160,12 @@ namespace GTA_Manager
                 tabPageRage.TabIndex = 4;
                 tabPageRage.UseVisualStyleBackColor = true;
                 tabRage = new TabPageControl();
-                tabRage.init(TabPageControl.Type.RAGE);
+                tabRage.init(Type.RAGE);
                 tabPageRage.Controls.Add(tabRage);
                 tabControl.Controls.Add(tabPageRage);
             }
 
-            if (Directory.Exists(config.getSetting("Directory") + @"Plugins\LSPDFR\"))
+            if (Directory.Exists(config.Settings.Directory + @"Plugins\LSPDFR\"))
             {
                 tabPageLSPDFR = new TabPage();
                 tabPageLSPDFR.Location = new Point(0, 0);
@@ -177,7 +175,7 @@ namespace GTA_Manager
                 tabPageLSPDFR.TabIndex = 5;
                 tabPageLSPDFR.UseVisualStyleBackColor = true;
                 tabLSPDFR = new TabPageControl();
-                tabLSPDFR.init(TabPageControl.Type.LSPDFR);
+                tabLSPDFR.init(Type.LSPDFR);
                 tabPageLSPDFR.Controls.Add(tabLSPDFR);
                 tabControl.Controls.Add(tabPageLSPDFR);
             }
@@ -232,19 +230,19 @@ namespace GTA_Manager
 
         private void checkBoxRage_CheckedChanged(object sender, EventArgs e)
         {
-            Config config = new Config();
+            Config config = Config.Get();
 
             if (checkBoxRage.Checked)
             {
-                if (!File.Exists(config.getSetting("Directory") + "RAGEPluginHook.exe"))
+                if (!File.Exists(config.Settings.Directory + "RAGEPluginHook.exe"))
                 {
                     MessageBox.Show(Language.MessageRage, Language.TitleRage, MessageBoxButtons.OK);
                     checkBoxRage.Checked = false;
                 }
             }
 
-            config.setSetting("Rage", checkBoxRage.Checked.ToString());
-            config.save();
+            config.Settings.Rage = checkBoxRage.Checked;
+            config.Save();
         }
 
         private void buttonPlay_Click(object sender, EventArgs e)
@@ -270,11 +268,11 @@ namespace GTA_Manager
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            Config config = new Config();
+            Config config = Config.Get();
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
-            openFileDialog.InitialDirectory = config.getSetting("Directory");
+            openFileDialog.InitialDirectory = config.Settings.Directory;
             openFileDialog.RestoreDirectory = false;
 
             DialogResult dialogResult = openFileDialog.ShowDialog();
@@ -306,15 +304,15 @@ namespace GTA_Manager
 
                 if (MessageBox.Show(Language.MessageRemove, Language.TitleRemove, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    Config config = new Config();
+                    Config config = Config.Get();
 
                     List<string> list = selectedTab.listBoxDisabled.SelectedItems.OfType<string>().ToList();
 
                     foreach (string item in list)
                     {
                         File.Delete(directory + item + ".DISABLE");
-                        config.removeDisabled(selectedTab.getType().ToString(), item);
-                        config.save();
+                        config.DisabledItems.Remove(selectedTab.getType(), item);
+                        config.Save();
 
                         if (Directory.GetFiles(directory) != null)
                         {
@@ -397,12 +395,12 @@ namespace GTA_Manager
 
         private void comboBoxLang_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            Config config = new Config();
+            Config config = Config.Get();
 
-            if (int.Parse(config.getSetting("Language")) != comboBoxLang.SelectedIndex)
+            if (config.Settings.Language != comboBoxLang.SelectedIndex)
             {
-                config.setSetting("Language", comboBoxLang.SelectedIndex.ToString());
-                config.save();
+                config.Settings.Language = comboBoxLang.SelectedIndex;
+                config.Save();
 
                 MessageBox.Show(Language.MessageRestart, Language.TitleRestart, MessageBoxButtons.OK);
             }
@@ -410,11 +408,11 @@ namespace GTA_Manager
 
         private void comboBoxMode_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            Config config = new Config();
+            Config config = Config.Get();
 
             int num = 0;
 
-            if (!Boolean.Parse(config.getSetting("Online")))
+            if (!config.Settings.Online)
             {
                 num = 1;
             }
@@ -434,18 +432,18 @@ namespace GTA_Manager
                     bool @checked = checkBoxRage.Checked;
                     checkBoxRage.Checked = false;
                     checkBoxRage.Enabled = false;
-                    config.setSetting("Rage", @checked.ToString());
-                    config.setSetting("Online", "true");
+                    config.Settings.Rage = @checked;
+                    config.Settings.Online = true;
                 }
                 else
                 {
                     Launcher.enableMods();
                     checkBoxRage.Enabled = true;
-                    checkBoxRage.Checked = Boolean.Parse(config.getSetting("Rage"));
-                    config.setSetting("Online", "false");
+                    checkBoxRage.Checked = config.Settings.Rage;
+                    config.Settings.Online = false;
                 }
 
-                config.save();
+                config.Save();
             }
             else
             {
@@ -478,11 +476,11 @@ namespace GTA_Manager
 
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
-            Config config = new Config();
+            Config config = Config.Get();
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
-            openFileDialog.InitialDirectory = config.getSetting("Directory");
+            openFileDialog.InitialDirectory = config.Settings.Directory;
             openFileDialog.Filter = "GTA Executable |GTA5.exe";
 
             DialogResult dialogResult = openFileDialog.ShowDialog();
@@ -491,8 +489,8 @@ namespace GTA_Manager
             {
                 string directory = openFileDialog.FileName.Replace("GTA5.exe", "");
 
-                config.setSetting("Directory", directory);
-                config.save();
+                config.Settings.Directory = directory;
+                config.Save();
 
                 textBoxDirectory.Text = directory;
                 textBoxDirectory.ForeColor = Color.Black;

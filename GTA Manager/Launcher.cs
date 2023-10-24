@@ -8,9 +8,7 @@ namespace GTA_Manager
     {
         public static void launch(bool online, bool rage)
         {
-            Config config = new Config();
-
-            string path = config.getSetting("Directory");
+            string path = Config.Get().Settings.Directory;
 
             if (rage && !online)
             {
@@ -35,7 +33,7 @@ namespace GTA_Manager
 
         public static void enableMods()
         {
-            string path = new Config().getSetting("Directory");
+            string path = Config.Get().Settings.Directory;
 
             string text = path + "dinput8.dll.DISABLE";
 
@@ -53,19 +51,21 @@ namespace GTA_Manager
 
             if (Directory.Exists(path + @"asi\"))
             {
-                enableMods(path + @"asi\", true, TabPageControl.Type.ASI);
+                enableMods(path + @"asi\", true, Type.ASI);
             }
 
-            enableMods(path, true, TabPageControl.Type.ASI);
-            enableMods(path + @"scripts\", true, TabPageControl.Type.DOTNET);
-            enableMods(path + @"Plugins\", true, TabPageControl.Type.RAGE);
-            enableMods(path + @"scripts\addins\", true, TabPageControl.Type.LUA);
-            enableMods(path + @"Plugins\LSPDFR\", true, TabPageControl.Type.LSPDFR);
+            enableMods(path, true, Type.ASI);
+            enableMods(path + @"scripts\", true, Type.DOTNET);
+            enableMods(path + @"Plugins\", true, Type.RAGE);
+            enableMods(path + @"scripts\addins\", true, Type.LUALEGACY);
+            enableMods(path + @"scripts\ScriptsDir-Lua\Modules", true, Type.LUALEGACY);
+            enableMods(path + @"scripts\ScriptsDir-Lua\", true, Type.LUA);         
+            enableMods(path + @"Plugins\LSPDFR\", true, Type.LSPDFR);
         }
 
         public static void enableAllMods()
         {
-            string path = new Config().getSetting("Directory");
+            string path = Config.Get().Settings.Directory;
 
             string text = path + "dinput8.dll.DISABLE";
 
@@ -83,17 +83,19 @@ namespace GTA_Manager
 
             if (Directory.Exists(path + @"asi\"))
             {
-                enableMods(path + @"asi\", false, TabPageControl.Type.ASI);
+                enableMods(path + @"asi\", false, Type.ASI);
             }
 
-            enableMods(path, false, TabPageControl.Type.ASI);
-            enableMods(path + @"scripts\", false, TabPageControl.Type.DOTNET);
-            enableMods(path + @"Plugins\", false, TabPageControl.Type.RAGE);
-            enableMods(path + @"Plugins\LSPDFR\", false, TabPageControl.Type.LUA);
-            enableMods(path + @"scripts\addins\", false, TabPageControl.Type.LSPDFR);
+            enableMods(path, false, Type.ASI);
+            enableMods(path + @"scripts\", false, Type.DOTNET);
+            enableMods(path + @"Plugins\", false, Type.RAGE);           
+            enableMods(path + @"scripts\addins\", false, Type.LUALEGACY);
+            enableMods(path + @"scripts\ScriptsDir-Lua\Modules\", false, Type.LUALEGACY);
+            enableMods(path + @"scripts\ScriptsDir-Lua\", false, Type.LUA);
+            enableMods(path + @"Plugins\LSPDFR\", false, Type.LSPDFR);
         }
 
-        private static void enableMods(string directory, bool check, TabPageControl.Type type)
+        private static void enableMods(string directory, bool check, Type type)
         {
             if (!Directory.Exists(directory))
             {
@@ -108,7 +110,7 @@ namespace GTA_Manager
 
                     if (check)
                     {
-                        if (!new Config().getDisabled(type.ToString()).Contains(destFileName.Replace(directory, "")))
+                        if (!Config.Get().DisabledItems.Contains(type, destFileName.Replace(directory, "")))
                         {
                             File.Move(file, destFileName);
                         }
@@ -121,27 +123,31 @@ namespace GTA_Manager
             }
         }
 
-        public static void enableMod(TabPageControl.Type type, string fileName)
+        public static void enableMod(Type type, string fileName)
         {
-            string path = new Config().getSetting("Directory");
+            string path = Config.Get().Settings.Directory;
 
-            if (type.Equals(TabPageControl.Type.ASI))
+            if (type.Equals(Type.ASI))
             {
                 fileName = ((!File.Exists(path + @"asi\" + fileName)) ? (path + fileName) : (path + @"asi\" + fileName));
             }
-            else if (type.Equals(TabPageControl.Type.DOTNET))
+            else if (type.Equals(Type.DOTNET))
             {
                 fileName = path + @"scripts\" + fileName;
             }
-            else if (type.Equals(TabPageControl.Type.RAGE))
+            else if (type.Equals(Type.RAGE))
             {
                 fileName = path + @"Plugins\" + fileName;
             }
-            else if (type.Equals(TabPageControl.Type.LUA))
+            else if (type.Equals(Type.LUA))
             {
-                fileName = path + @"scripts\addins\" + fileName;
+                fileName = path + @"scripts\ScriptsDir-Lua\" + fileName;
             }
-            else if (type.Equals(TabPageControl.Type.LSPDFR))
+            else if (type.Equals(Type.LUALEGACY))
+            {
+                fileName = File.Exists(path + @"scripts\addins\" + fileName) ? path + @"scripts\addins\" + fileName : path + @"scripts\ScriptsDir-Lua\Modules\" + fileName;
+            }
+            else if (type.Equals(Type.LSPDFR))
             {
                 fileName = path + @"Plugins\LSPDFR\" + fileName;
             }
@@ -151,33 +157,31 @@ namespace GTA_Manager
 
         public static void disableMods()
         {
-            string path = new Config().getSetting("Directory");
+            string path = Config.Get().Settings.Directory;
 
             string[] args1 = new string[] { ".asi" };
 
-            if (Directory.Exists(path + @"asi\"))
-            {
-                disableMods(path + @"asi\", true, TabPageControl.Type.ASI, args1);
-            }
-
-            disableMods(path, true, TabPageControl.Type.ASI, args1);
+            disableMods(path + @"asi\", true, Type.ASI, args1);
+            disableMods(path, true, Type.ASI, args1);
 
             string[] args2 = new string[] { ".dll", ".cs", ".vb" };
-            disableMods(path + @"scripts\", true, TabPageControl.Type.DOTNET, args2);
+            disableMods(path + @"scripts\", true, Type.DOTNET, args2);
 
             string[] args3 = new string[] { ".dll" };
-            disableMods(path + @"Plugins\", true, TabPageControl.Type.RAGE, args3);
+            disableMods(path + @"Plugins\", true, Type.RAGE, args3);
 
             string[] args4 = new string[] { ".lua" };
-            disableMods(path + @"scripts\addins\", true, TabPageControl.Type.LUA, args4);
+            disableMods(path + @"scripts\addins\", true, Type.LUALEGACY, args4);
+            disableMods(path + @"scripts\ScriptsDir-Lua\", true, Type.LUA, args4);
+            disableMods(path + @"scripts\ScriptsDir-Lua\Modules", true, Type.LUALEGACY, args4);
 
             string[] args5 = new string[] { ".dll" };
-            disableMods(path + @"Plugins\LSPDFR\", true, TabPageControl.Type.LSPDFR, args5);
+            disableMods(path + @"Plugins\LSPDFR\", true, Type.LSPDFR, args5);
         }
 
         public static void disableAllMods()
         {
-            string path = new Config().getSetting("Directory");
+            string path = Config.Get().Settings.Directory;
 
             string text = path + "dinput8.dll";
 
@@ -194,32 +198,36 @@ namespace GTA_Manager
             }
 
             string[] args = new string[1] { ".asi" };
-            disableMods(path, false, TabPageControl.Type.ASI, args);
+            disableMods(path, false, Type.ASI, args);
         }
 
-        public static void disableMod(TabPageControl.Type type, string fileName)
+        public static void disableMod(Type type, string fileName)
         {
-            string path = new Config().getSetting("Directory");
+            string path = Config.Get().Settings.Directory;
 
-            if (type.Equals(TabPageControl.Type.ASI))
+            if (type.Equals(Type.ASI))
             {
                 fileName = ((!File.Exists(path + @"asi\" + fileName)) ? (path + fileName) : (path + @"asi\" + fileName));
             }
-            else if (type.Equals(TabPageControl.Type.DOTNET))
+            else if (type.Equals(Type.DOTNET))
             {
                 fileName = path + @"scripts\" + fileName;
             }
-            else if (type.Equals(TabPageControl.Type.RAGE))
+            else if (type.Equals(Type.RAGE))
             {
                 fileName = path + @"Plugins\" + fileName;
             }
-            else if (type.Equals(TabPageControl.Type.LUA))
+            else if (type.Equals(Type.LUA))
             {
-                fileName = path + @"scripts\\addins\" + fileName;
+                fileName = path + @"scripts\ScriptsDir-Lua\" + fileName;
             }
-            else if (type.Equals(TabPageControl.Type.LSPDFR))
+            else if (type.Equals(Type.LUALEGACY))
             {
-                fileName = path + @"Plugins\\LSPDFR\" + fileName;
+                fileName = File.Exists(path + @"scripts\addins\" + fileName) ? path + @"scripts\addins\" + fileName : path + @"scripts\ScriptsDir-Lua\Modules\" + fileName;
+            }
+            else if (type.Equals(Type.LSPDFR))
+            {
+                fileName = path + @"Plugins\LSPDFR\" + fileName;
             }
 
             if (File.Exists(fileName))
@@ -228,7 +236,7 @@ namespace GTA_Manager
             }
         }
 
-        private static void disableMods(string directory, bool check, TabPageControl.Type type, string[] args)
+        private static void disableMods(string directory, bool check, Type type, string[] args)
         {
             if (!Directory.Exists(directory))
             {
@@ -245,7 +253,7 @@ namespace GTA_Manager
                         {
                             if (check)
                             {
-                                if (new Config().getDisabled(type.ToString()).Contains(file.Replace(directory, "")))
+                                if (Config.Get().DisabledItems.Contains(type, file.Replace(directory, "")))
                                 {
                                     File.Move(file, file + ".DISABLE");
                                 }
