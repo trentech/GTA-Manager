@@ -92,7 +92,6 @@ namespace GTA_Manager
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(620, 487);
             this.tabControl.TabIndex = 4;
-            this.tabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl_Selected);
             // 
             // checkBoxRage
             // 

@@ -11,83 +11,73 @@ namespace GTA_Manager
     public partial class TabPageControl : UserControl
     {
 
-        public TabPageControl()
+        public Type Type { get; }
+        public string Path { get; set; }
+        private List<string> Extensions { get; } = new List<string>();
+
+        public TabPageControl(Type Type)
         {
+            this.Type = Type;
             InitializeComponent();
             Dock = DockStyle.Fill;
+            Init();
         }
 
-        public Type getType()
-        {
-            return type;
-        }
-
-        public string getDirectory()
-        {
-            return directory;
-        }
-
-        public List<string> getExtensions()
-        {
-            return extensions;
-        }
-
-        public void init(Type type)
+        public void Init()
         {
             labelDisabled.Text = Language.labelDisabled;
             labelEnabled.Text = Language.labelEnabled;
 
-            this.type = type;
-            Text = type.ToString();
+            Text = Type.ToString();
 
-            string directoryName = Config.Get().Settings.Directory;
+            string directoryName = Program.Config.Settings.Directory;
 
-            switch (type)
+            switch (Type)
             {
                 case Type.ASI:
                     if (Directory.Exists(directoryName + @"asi\"))
                     {
-                        directory = directoryName + @"asi\";
+                        Path = directoryName + @"asi\";
                     }
                     else
                     {
-                        directory = directoryName;
+                        Path = directoryName;
                     }
-                    extensions.Add(".asi");
+                    Extensions.Add(".asi");
                     break;
                 case Type.DOTNET:
-                    directory = directoryName + @"scripts\";
-                    extensions.Add(".dll");
-                    extensions.Add(".cs");
-                    extensions.Add(".vb");
+                    Path = directoryName + @"scripts\";
+                    Extensions.Add(".dll");
+                    Extensions.Add(".cs");
+                    Extensions.Add(".vb");
                     break;
                 case Type.RAGE:
-                    directory = directoryName + @"Plugins\";
-                    extensions.Add(".dll");
+                    Path = directoryName + @"Plugins\";
+                    Extensions.Add(".dll");
                     break;
                 case Type.LUA:
-                    directory = directoryName + @"scripts\ScriptsDir-Lua\";
-                    extensions.Add(".lua");
+                    Path = directoryName + @"scripts\ScriptsDir-Lua\";
+                    Extensions.Add(".lua");
                     break;
                 case Type.LUALEGACY:
                     if (Directory.Exists(directoryName + @"scripts\ScriptsDir-Lua\"))
                     {
-                        directory = directoryName + @"scripts\ScriptsDir-Lua\Modules\";
+                        Path = directoryName + @"scripts\ScriptsDir-Lua\Modules\";
                     }
                     else
                     {
-                        directory = directoryName + @"scripts\addins\";
+                        Path = directoryName + @"scripts\addins\";
                     }
-                    extensions.Add(".lua");
+                    Extensions.Add(".lua");
                     break;
                 case Type.LSPDFR:
-                    directory = directoryName + @"Plugins\LSPDFR\";
-                    extensions.Add(".dll");
+                    Path = directoryName + @"Plugins\LSPDFR\";
+                    Extensions.Add(".dll");
                     break;
             }
 
             FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
-            fileSystemWatcher.Path = directory;
+            fileSystemWatcher.Path = Path;
             fileSystemWatcher.Filter = "*.*";
             fileSystemWatcher.Created += onDirectoryChange;
             fileSystemWatcher.Deleted += onDirectoryChange;
@@ -109,34 +99,34 @@ namespace GTA_Manager
                 Invoke((MethodInvoker)delegate { listBoxDisabled.Items.Clear(); });
             }
 
-            foreach (string file in Directory.GetFiles(directory))
+            foreach (string file in Directory.GetFiles(Path))
             {
                 string fileName = file.Replace(".DISABLE", "");
 
-                foreach (string extension in extensions)
+                foreach (string extension in Extensions)
                 {
                     if (fileName.Contains(extension))
                     {
-                        if (Config.Get().DisabledItems.Contains(type, file.Replace(directory, "")))
+                        if (Program.Config.DisabledItems.Contains(Type, file.Replace(Path, "")))
                         {
                             try
                             {
-                                listBoxDisabled.Items.Add(fileName.Replace(directory, ""));
+                                listBoxDisabled.Items.Add(fileName.Replace(Path, ""));
                             }
                             catch
                             {
-                                Invoke((MethodInvoker)delegate { listBoxDisabled.Items.Add(fileName.Replace(directory, "")); });
+                                Invoke((MethodInvoker)delegate { listBoxDisabled.Items.Add(fileName.Replace(Path, "")); });
                             }
                         }
                         else
                         {
                             try
                             {
-                                listBoxEnabled.Items.Add(fileName.Replace(directory, ""));
+                                listBoxEnabled.Items.Add(fileName.Replace(Path, ""));
                             }
                             catch
                             {
-                                Invoke((MethodInvoker)delegate { listBoxEnabled.Items.Add(fileName.Replace(directory, "")); });
+                                Invoke((MethodInvoker)delegate { listBoxEnabled.Items.Add(fileName.Replace(Path, "")); });
                             }
                         }
                     }
@@ -146,9 +136,9 @@ namespace GTA_Manager
 
         private void onDirectoryChange(object sender, FileSystemEventArgs e)
         {
-            string @object = Path.GetExtension(e.FullPath) ?? string.Empty;
+            string @object = System.IO.Path.GetExtension(e.FullPath) ?? string.Empty;
             List<string> list = new List<string>();
-            list.AddRange(extensions);
+            list.AddRange(Extensions);
             list.Add(".DISABLE");
 
             if (list.Any(@object.Equals))
@@ -167,20 +157,18 @@ namespace GTA_Manager
 
                 if (processesByName.Length == 0)
                 {
-                    Config config = Config.Get();
-
                     foreach (string item in list)
                     {
-                        config.DisabledItems.Remove(type, item);
-                        config.Save();
+                        Program.Config.DisabledItems.Remove(Type, item);
+                        Program.Config.Save();
 
-                        if (type.Equals(Type.ASI) && !config.Settings.Online)
+                        if (Type.Equals(Type.ASI) && !Program.Config.Settings.Online)
                         {
-                            Launcher.enableMod(type, item);
+                            Launcher.enableMod(Type, item);
                         }
-                        else if (!type.Equals(Type.ASI))
+                        else if (!Type.Equals(Type.ASI))
                         {
-                            Launcher.enableMod(type, item);
+                            Launcher.enableMod(Type, item);
                         }
 
                         listBoxEnabled.Items.Add(item);
@@ -206,15 +194,13 @@ namespace GTA_Manager
 
                 if (processesByName.Length == 0)
                 {
-                    Config config = Config.Get();
-
                     foreach (string item in list)
                     {
-                        config.DisabledItems.Add(type, item);
+                        Program.Config.DisabledItems.Add(Type, item);
 
-                        config.Save();
+                        Program.Config.Save();
 
-                        Launcher.disableMod(type, item);
+                        Launcher.disableMod(Type, item);
 
                         listBoxDisabled.Items.Add(item);
                         listBoxEnabled.Items.Remove(item);
@@ -238,19 +224,19 @@ namespace GTA_Manager
 
                 foreach (string text in array2)
                 {
-                    string fileName = Path.GetFileName(text);
+                    string fileName = System.IO.Path.GetFileName(text);
 
-                    if(File.Exists(directory + fileName))
+                    if(File.Exists(Path + fileName))
                     {
                         DialogResult result = MessageBox.Show(fileName + "already exists. Overwrite?", "Overwrite File?", MessageBoxButtons.YesNo);
 
                         if(result.Equals(DialogResult.Yes))
                         {
-                            File.Copy(text, directory + fileName);
+                            File.Copy(text, Path + fileName);
                         }
                     } else
                     {
-                        File.Copy(text, directory + fileName);
+                        File.Copy(text, Path + fileName);
                     }                
                 }
             }
@@ -266,7 +252,7 @@ namespace GTA_Manager
 
         private void listBoxEnabled_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            string str = (directory + listBoxEnabled.SelectedItem).Substring(0, (directory + listBoxEnabled.SelectedItem).LastIndexOf("."));
+            string str = (Path + listBoxEnabled.SelectedItem).Substring(0, (Path + listBoxEnabled.SelectedItem).LastIndexOf("."));
 
             if (File.Exists(str + ".ini"))
             {
@@ -288,13 +274,13 @@ namespace GTA_Manager
 
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = "explorer.exe";
-            processStartInfo.Arguments = "/select," + directory + listBoxEnabled.SelectedItem;
-            Process process = Process.Start(processStartInfo);
+            processStartInfo.Arguments = "/select," + Path + listBoxEnabled.SelectedItem;
+            Process.Start(processStartInfo);
         }
 
         private void listBoxDisabled_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            string str = (directory + listBoxEnabled.SelectedItem).Substring(0, (directory + listBoxEnabled.SelectedItem).LastIndexOf("."));
+            string str = (Path + listBoxEnabled.SelectedItem).Substring(0, (Path + listBoxEnabled.SelectedItem).LastIndexOf("."));
 
             if (File.Exists(str + ".ini"))
             {
@@ -316,8 +302,8 @@ namespace GTA_Manager
 
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = "explorer.exe";
-            processStartInfo.Arguments = "/select," + directory + listBoxEnabled.SelectedItem;
-            Process process = Process.Start(processStartInfo);
+            processStartInfo.Arguments = "/select," + Path + listBoxEnabled.SelectedItem;
+            Process.Start(processStartInfo);
         }
 
         private void listBoxEnabled_SelectedIndexChanged(object sender, EventArgs e)

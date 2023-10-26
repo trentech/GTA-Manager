@@ -8,7 +8,7 @@ namespace GTA_Manager
     {
         public static void launch(bool online, bool rage)
         {
-            string path = Config.Get().Settings.Directory;
+            string path = Program.Config.Settings.Directory;
 
             if (rage && !online)
             {
@@ -33,7 +33,7 @@ namespace GTA_Manager
 
         public static void enableMods()
         {
-            string path = Config.Get().Settings.Directory;
+            string path = Program.Config.Settings.Directory;
 
             string text = path + "dinput8.dll.DISABLE";
 
@@ -65,7 +65,7 @@ namespace GTA_Manager
 
         public static void enableAllMods()
         {
-            string path = Config.Get().Settings.Directory;
+            string path = Program.Config.Settings.Directory;
 
             string text = path + "dinput8.dll.DISABLE";
 
@@ -110,7 +110,7 @@ namespace GTA_Manager
 
                     if (check)
                     {
-                        if (!Config.Get().DisabledItems.Contains(type, destFileName.Replace(directory, "")))
+                        if (!Program.Config.DisabledItems.Contains(type, destFileName.Replace(directory, "")))
                         {
                             File.Move(file, destFileName);
                         }
@@ -125,7 +125,7 @@ namespace GTA_Manager
 
         public static void enableMod(Type type, string fileName)
         {
-            string path = Config.Get().Settings.Directory;
+            string path = Program.Config.Settings.Directory;
 
             if (type.Equals(Type.ASI))
             {
@@ -157,7 +157,7 @@ namespace GTA_Manager
 
         public static void disableMods()
         {
-            string path = Config.Get().Settings.Directory;
+            string path = Program.Config.Settings.Directory;
 
             string[] args1 = new string[] { ".asi" };
 
@@ -181,7 +181,7 @@ namespace GTA_Manager
 
         public static void disableAllMods()
         {
-            string path = Config.Get().Settings.Directory;
+            string path = Program.Config.Settings.Directory;
 
             string text = path + "dinput8.dll";
 
@@ -203,7 +203,7 @@ namespace GTA_Manager
 
         public static void disableMod(Type type, string fileName)
         {
-            string path = Config.Get().Settings.Directory;
+            string path = Program.Config.Settings.Directory;
 
             if (type.Equals(Type.ASI))
             {
@@ -253,7 +253,7 @@ namespace GTA_Manager
                         {
                             if (check)
                             {
-                                if (Config.Get().DisabledItems.Contains(type, file.Replace(directory, "")))
+                                if (Program.Config.DisabledItems.Contains(type, file.Replace(directory, "")))
                                 {
                                     File.Move(file, file + ".DISABLE");
                                 }

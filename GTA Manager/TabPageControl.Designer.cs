@@ -11,9 +11,6 @@ namespace GTA_Manager
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-        private Type type;
-        private string directory;
-        private List<string> extensions = new List<string>();
         private TableLayoutPanel tableMiddle;
         private Button buttonEnable;
         private Button buttonDisable;

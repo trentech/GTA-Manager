@@ -9,12 +9,15 @@ namespace GTA_Manager
 {
     static class Program
     {
+        public static Config Config;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         private static void Main()
         {
+            Config = Config.Get();
+
             Thread.CurrentThread.CurrentCulture = new CultureInfo(getRegionCode());
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(getRegionCode());
             Application.EnableVisualStyles();
@@ -41,7 +44,7 @@ namespace GTA_Manager
 
         public static string getRegionCode()
         {
-            switch (Config.Get().Settings.Language)
+            switch (Config.Settings.Language)
             {
                 case 0:
                     return "en-US";

@@ -12,7 +12,7 @@ namespace GTA_Manager
         [JsonProperty]
         public DisabledItems DisabledItems { get; set; }
         [JsonIgnore]
-        public static string PATH = AppDomain.CurrentDomain.BaseDirectory;
+        private static string PATH = AppDomain.CurrentDomain.BaseDirectory;
         [JsonIgnore]
         private static string CONFIG = Path.Combine(PATH, "config.json");
 
@@ -81,6 +81,8 @@ namespace GTA_Manager
         private List<string> LUALEGACY = new List<string>();
         [JsonProperty]
         private List<string> LSPDFR = new List<string>();
+        [JsonProperty]
+        private List<string> RAGE = new List<string>();
 
         public bool Contains(Type type, string name)
         {
@@ -96,6 +98,8 @@ namespace GTA_Manager
                     return LUALEGACY.Contains(name);
                 case Type.LSPDFR:
                     return LSPDFR.Contains(name);
+                case Type.RAGE:
+                    return RAGE.Contains(name);
                 default: return false;
             }
         }
@@ -119,6 +123,9 @@ namespace GTA_Manager
                 case Type.LSPDFR:
                     if (!LSPDFR.Contains(name)) { LSPDFR.Add(name); }
                     break;
+                case Type.RAGE:
+                    if (!RAGE.Contains(name)) { RAGE.Add(name); }
+                    break;
             }
 
         }
@@ -141,6 +148,9 @@ namespace GTA_Manager
                     break;
                 case Type.LSPDFR:
                     if (!LSPDFR.Contains(name)) { LSPDFR.Remove(name); }
+                    break;
+                case Type.RAGE:
+                    if (!RAGE.Contains(name)) { RAGE.Remove(name); }
                     break;
             }
         }

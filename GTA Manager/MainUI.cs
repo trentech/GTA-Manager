@@ -27,10 +27,8 @@ namespace GTA_Manager
 
         private void init()
         {
-            Config config = Config.Get();
-
             labelVersion.Text += Assembly.GetCallingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetCallingAssembly().GetName().Version.ToString().LastIndexOf("."));
-            comboBoxLang.SelectedIndex = config.Settings.Language;
+            comboBoxLang.SelectedIndex = Program.Config.Settings.Language;
 
             buttonAdd.Text = Language.buttonAdd;
             buttonRemove.Text = Language.buttonRemove;
@@ -39,7 +37,7 @@ namespace GTA_Manager
             buttonBrowse.Text = Language.buttonBrowse;
             comboBoxMode.Items.AddRange(new string[] { Language.comboBoxOnline, Language.comboBoxOffline });
 
-            if (config.Settings.First)
+            if (Program.Config.Settings.First)
             {
                 DialogResult dialogResult = MessageBox.Show(Language.MessageShortcut, Language.TitleShortcut, MessageBoxButtons.YesNo);
 
@@ -48,14 +46,14 @@ namespace GTA_Manager
                     createShortcut();
                 }
 
-                config.Settings.First = false;
-                config.Save();
+                Program.Config.Settings.First = false;
+                Program.Config.Save();
             }
 
-            if (!config.Settings.Online)
+            if (!Program.Config.Settings.Online)
             {
                 comboBoxMode.SelectedIndex = 1;
-                checkBoxRage.Checked = config.Settings.Rage;
+                checkBoxRage.Checked = Program.Config.Settings.Rage;
             }
             else
             {
@@ -66,9 +64,9 @@ namespace GTA_Manager
                 checkBoxRage.Enabled = false;            
             }
 
-            if (File.Exists(config.Settings.Directory + "GTA5.exe"))
+            if (File.Exists(Program.Config.Settings.Directory + "GTA5.exe"))
             {
-                textBoxDirectory.Text = config.Settings.Directory;
+                textBoxDirectory.Text = Program.Config.Settings.Directory;
                 textBoxDirectory.ForeColor = Color.Black;
 
                 initTabs();
@@ -79,103 +77,79 @@ namespace GTA_Manager
             }
         }
 
+        private TabPage InitTabPage(string name, string text, int index)
+        {
+            TabPage tabPage = new TabPage();
+
+            tabPage.Location = new Point(0, 0);
+            tabPage.Name = name;
+            tabPage.Text = text;
+            tabPage.Size = new Size(200, 100);
+            tabPage.TabIndex = index;
+            tabPage.UseVisualStyleBackColor = true;
+
+            return tabPage;
+        }
         private void initTabs()
         {
-            tabPageScriptHook = new TabPage();
-            tabPageScriptHook.Location = new Point(0, 0);
-            tabPageScriptHook.Name = "tabPageScriptHook";
-            tabPageScriptHook.Text = "ScriptHookV";
-            tabPageScriptHook.Size = new Size(200, 100);
-            tabPageScriptHook.TabIndex = 0;
-            tabPageScriptHook.UseVisualStyleBackColor = true;
-            tabScriptHook = new TabPageControl();
-            tabScriptHook.init(Type.ASI);
+            tabPageScriptHook = InitTabPage("tabPageScriptHook", "ScriptHookV", 0);
+
+            tabScriptHook = new TabPageControl(Type.ASI);
+
             tabPageScriptHook.Controls.Add(tabScriptHook);
             tabControl.Controls.Add(tabPageScriptHook);
 
-            Config config = Config.Get();
-
-            if (Directory.Exists(config.Settings.Directory + @"scripts\"))
+            if (Directory.Exists(Program.Config.Settings.Directory + @"scripts\"))
             {
-                tabPageScriptHookDotNet = new TabPage();
-                tabPageScriptHookDotNet.Location = new Point(0, 0);
-                tabPageScriptHookDotNet.Name = "tabPageScriptHookDotNet";
-                tabPageScriptHookDotNet.Text = "ScriptHookVDotNet";
-                tabPageScriptHookDotNet.Size = new Size(200, 100);
-                tabPageScriptHookDotNet.TabIndex = 1;
-                tabPageScriptHookDotNet.UseVisualStyleBackColor = true;
-                tabScriptHookDotNet = new TabPageControl();
-                tabScriptHookDotNet.init(Type.DOTNET);
+                tabPageScriptHookDotNet = InitTabPage("tabPageScriptHookDotNet", "ScriptHookVDotNet", 1);
+
+                tabScriptHookDotNet = new TabPageControl(Type.DOTNET);
+
                 tabPageScriptHookDotNet.Controls.Add(tabScriptHookDotNet);
                 tabControl.Controls.Add(tabPageScriptHookDotNet);
             }
 
-            if (Directory.Exists(config.Settings.Directory + @"scripts\ScriptsDir-Lua\"))
+            if (Directory.Exists(Program.Config.Settings.Directory + @"scripts\ScriptsDir-Lua\"))
             {
-                tabPageLua = new TabPage();
-                tabPageLua.Location = new Point(0, 0);
-                tabPageLua.Name = "tabPageLua";
-                tabPageLua.Text = "Lua";
-                tabPageLua.Size = new Size(200, 100);
-                tabPageLua.TabIndex = 2;
-                tabPageLua.UseVisualStyleBackColor = true;
-                tabLua = new TabPageControl();
-                tabLua.init(Type.LUA);
+                tabPageLua = InitTabPage("tabPageLua", "Lua", 2);
+
+                tabLua = new TabPageControl(Type.LUA);
+
                 tabPageLua.Controls.Add(tabLua);
                 tabControl.Controls.Add(tabPageLua);
 
-                tabPageLuaLegacy = new TabPage();
-                tabPageLuaLegacy.Location = new Point(0, 0);
-                tabPageLuaLegacy.Name = "tabPageLuaLegacy";
-                tabPageLuaLegacy.Text = "LuaLegacy";
-                tabPageLuaLegacy.Size = new Size(200, 100);
-                tabPageLuaLegacy.TabIndex = 3;
-                tabPageLuaLegacy.UseVisualStyleBackColor = true;
-                tabLuaLegacy = new TabPageControl();
-                tabLuaLegacy.init(Type.LUALEGACY);
+                tabPageLuaLegacy = InitTabPage("tabPageLuaLegacy", "Lua Legacy", 3);
+
+                tabLuaLegacy = new TabPageControl(Type.LUALEGACY);
+
                 tabPageLuaLegacy.Controls.Add(tabLuaLegacy);
                 tabControl.Controls.Add(tabPageLuaLegacy);
-            } else if (Directory.Exists(config.Settings.Directory + @"scripts\addins\"))
+            } else if (Directory.Exists(Program.Config.Settings.Directory + @"scripts\addins\"))
             {
-                tabPageLuaLegacy = new TabPage();
-                tabPageLuaLegacy.Location = new Point(0, 0);
-                tabPageLuaLegacy.Name = "tabPageLuaLegacy";
-                tabPageLuaLegacy.Text = "LuaLegacy";
-                tabPageLuaLegacy.Size = new Size(200, 100);
-                tabPageLuaLegacy.TabIndex = 3;
-                tabPageLuaLegacy.UseVisualStyleBackColor = true;
-                tabLuaLegacy = new TabPageControl();
-                tabLuaLegacy.init(Type.LUA);
+                tabPageLuaLegacy = InitTabPage("tabPageLuaLegacy", "Lua Legacy", 3);
+
+                tabLuaLegacy = new TabPageControl(Type.LUALEGACY);
+
                 tabPageLuaLegacy.Controls.Add(tabLuaLegacy);
                 tabControl.Controls.Add(tabPageLuaLegacy);
             }
 
-            if (Directory.Exists(config.Settings.Directory + @"Plugins\"))
+            if (Directory.Exists(Program.Config.Settings.Directory + @"Plugins\"))
             {
-                tabPageRage = new TabPage();
-                tabPageRage.Location = new Point(0, 0);
-                tabPageRage.Name = "tabPageRage";
-                tabPageRage.Text = "Rage Plugin Hook";
-                tabPageRage.Size = new Size(200, 100);
-                tabPageRage.TabIndex = 4;
-                tabPageRage.UseVisualStyleBackColor = true;
-                tabRage = new TabPageControl();
-                tabRage.init(Type.RAGE);
+                tabPageRage = InitTabPage("tabPageRage", "Rage Plugin Hook", 4);
+
+                tabRage = new TabPageControl(Type.RAGE);
+
                 tabPageRage.Controls.Add(tabRage);
                 tabControl.Controls.Add(tabPageRage);
             }
 
-            if (Directory.Exists(config.Settings.Directory + @"Plugins\LSPDFR\"))
+            if (Directory.Exists(Program.Config.Settings.Directory + @"Plugins\LSPDFR\"))
             {
-                tabPageLSPDFR = new TabPage();
-                tabPageLSPDFR.Location = new Point(0, 0);
-                tabPageLSPDFR.Name = "tabPageLSPDFR";
-                tabPageLSPDFR.Text = "LSPDFR";
-                tabPageLSPDFR.Size = new Size(200, 100);
-                tabPageLSPDFR.TabIndex = 5;
-                tabPageLSPDFR.UseVisualStyleBackColor = true;
-                tabLSPDFR = new TabPageControl();
-                tabLSPDFR.init(Type.LSPDFR);
+                tabPageLSPDFR = InitTabPage("tabPageLSPDFR", "LSPDFR", 5);
+
+                tabLSPDFR = new TabPageControl(Type.LSPDFR);
+
                 tabPageLSPDFR.Controls.Add(tabLSPDFR);
                 tabControl.Controls.Add(tabPageLSPDFR);
             }
@@ -230,19 +204,17 @@ namespace GTA_Manager
 
         private void checkBoxRage_CheckedChanged(object sender, EventArgs e)
         {
-            Config config = Config.Get();
-
             if (checkBoxRage.Checked)
             {
-                if (!File.Exists(config.Settings.Directory + "RAGEPluginHook.exe"))
+                if (!File.Exists(Program.Config.Settings.Directory + "RAGEPluginHook.exe"))
                 {
                     MessageBox.Show(Language.MessageRage, Language.TitleRage, MessageBoxButtons.OK);
                     checkBoxRage.Checked = false;
                 }
             }
 
-            config.Settings.Rage = checkBoxRage.Checked;
-            config.Save();
+            Program.Config.Settings.Rage = checkBoxRage.Checked;
+            Program.Config.Save();
         }
 
         private void buttonPlay_Click(object sender, EventArgs e)
@@ -279,13 +251,12 @@ namespace GTA_Manager
 
             if (dialogResult == DialogResult.OK)
             {
-                string directory = getSelectedTab().getDirectory();
+                string directory = getSelectedTab().Path;
                 string[] fileNames = openFileDialog.FileNames;
                 string[] array = fileNames;
 
                 foreach (string sourceFileName in array)
                 {
-                    string fullPath = Path.GetFullPath(sourceFileName);
                     string fileName = Path.GetFileName(sourceFileName);
                     File.Copy(sourceFileName, directory + fileName);
 
@@ -300,7 +271,7 @@ namespace GTA_Manager
             if (processesByName.Length == 0)
             {
                 TabPageControl selectedTab = getSelectedTab();
-                string directory = getSelectedTab().getDirectory();
+                string directory = getSelectedTab().Path;
 
                 if (MessageBox.Show(Language.MessageRemove, Language.TitleRemove, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
@@ -311,7 +282,7 @@ namespace GTA_Manager
                     foreach (string item in list)
                     {
                         File.Delete(directory + item + ".DISABLE");
-                        config.DisabledItems.Remove(selectedTab.getType(), item);
+                        config.DisabledItems.Remove(selectedTab.Type, item);
                         config.Save();
 
                         if (Directory.GetFiles(directory) != null)
@@ -357,40 +328,7 @@ namespace GTA_Manager
 
         private void buttonOpen_Click(object sender, EventArgs e)
         {
-            Process.Start("explorer.exe", getSelectedTab().getDirectory());
-        }
-
-        private void tabControl_Selected(object sender, TabControlEventArgs e)
-        {
-            //string path = new Config().getSetting("Directory");
-
-            //if (tabControl.SelectedTab.Name.Equals("tabPageScriptHook"))
-            //{
-            //    if (Directory.Exists(path + @"asi\"))
-            //    {
-            //        textBoxDirectory.Text = path + @"asi\";
-            //    }
-            //    else
-            //    {
-            //        textBoxDirectory.Text = path;
-            //    }
-            //}
-            //else if (tabControl.SelectedTab.Name.Equals("tabPageScriptHookDotNet"))
-            //{
-            //    textBoxDirectory.Text = path + @"scripts\";
-            //}
-            //else if (tabControl.SelectedTab.Name.Equals("tabPageRage"))
-            //{
-            //    textBoxDirectory.Text = path + @"Plugins\";
-            //}
-            //else if (tabControl.SelectedTab.Name.Equals("tabPageLua"))
-            //{
-            //    textBoxDirectory.Text = path + @"scripts\addins\";
-            //}
-            //else if (tabControl.SelectedTab.Name.Equals("tabPageLSPDFR"))
-            //{
-            //    textBoxDirectory.Text = path + @"Plugins\LSPDFR\";
-            //}
+            Process.Start("explorer.exe", getSelectedTab().Path);
         }
 
         private void comboBoxLang_SelectionChangeCommitted(object sender, EventArgs e)
