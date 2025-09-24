@@ -153,7 +153,16 @@ namespace GTA_Manager
 
             if (list != null)
             {
-                Process[] processesByName = Process.GetProcessesByName("GTA5");
+                Process[] processesByName;
+
+                if (Program.Config.Settings.Enhanced)
+                {
+                    processesByName = Process.GetProcessesByName("GTA5_Enhanced");
+                }
+                else
+                {
+                    processesByName = Process.GetProcessesByName("GTA5");
+                }
 
                 if (processesByName.Length == 0)
                 {
@@ -190,7 +199,16 @@ namespace GTA_Manager
 
             if (list != null)
             {
-                Process[] processesByName = Process.GetProcessesByName("GTA5");
+                Process[] processesByName;
+
+                if (Program.Config.Settings.Enhanced)
+                {
+                    processesByName = Process.GetProcessesByName("GTA5_Enhanced");
+                }
+                else
+                {
+                    processesByName = Process.GetProcessesByName("GTA5");
+                }
 
                 if (processesByName.Length == 0)
                 {

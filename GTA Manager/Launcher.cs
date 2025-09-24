@@ -19,7 +19,15 @@ namespace GTA_Manager
             }
             else if (new FileInfo(path + "steam_api64.dll").Exists || new FileInfo(path + "steam_api.dll").Exists)
             {
-                Uri uri = new Uri("steam://rungameid/271590");
+                Uri uri;
+                if (Program.Config.Settings.Enhanced)
+                {
+                    uri = new Uri("steam://rungameid/3240220");
+                } else
+                {
+                    uri = new Uri("steam://rungameid/271590");
+                }
+                    
                 Process.Start(uri.AbsoluteUri);
             }
             else

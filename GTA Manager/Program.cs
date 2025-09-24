@@ -10,9 +10,7 @@ namespace GTA_Manager
     static class Program
     {
         public static Config Config;
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+
         [STAThread]
         private static void Main()
         {
@@ -23,7 +21,7 @@ namespace GTA_Manager
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (Config.Get().Settings.First)
+            if (Config.Settings.First)
             {
                 StartUI startUI = new StartUI();
                 CenterToScreen(startUI);

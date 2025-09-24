@@ -64,7 +64,7 @@ namespace GTA_Manager
                 checkBoxRage.Enabled = false;            
             }
 
-            if (File.Exists(Program.Config.Settings.Directory + "GTA5.exe"))
+            if (File.Exists(Program.Config.Settings.Directory + "GTA5.exe") || File.Exists(Program.Config.Settings.Directory + "GTA5_Enhanced.exe"))
             {
                 textBoxDirectory.Text = Program.Config.Settings.Directory;
                 textBoxDirectory.ForeColor = Color.Black;
@@ -219,7 +219,16 @@ namespace GTA_Manager
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            Process[] processesByName = Process.GetProcessesByName("GTA5");
+            Process[] processesByName;
+
+            if (Program.Config.Settings.Enhanced)
+            {
+                processesByName = Process.GetProcessesByName("GTA5_Enhanced");
+            }
+            else
+            {
+                processesByName = Process.GetProcessesByName("GTA5");
+            }
 
             if (processesByName.Length == 0)
             {
@@ -240,11 +249,9 @@ namespace GTA_Manager
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            Config config = Config.Get();
-
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
-            openFileDialog.InitialDirectory = config.Settings.Directory;
+            openFileDialog.InitialDirectory = Program.Config.Settings.Directory;
             openFileDialog.RestoreDirectory = false;
 
             DialogResult dialogResult = openFileDialog.ShowDialog();
@@ -266,7 +273,16 @@ namespace GTA_Manager
 
         private void buttonRemove_Click(object sender, EventArgs e)
         {
-            Process[] processesByName = Process.GetProcessesByName("GTA5");
+            Process[] processesByName;
+
+            if (Program.Config.Settings.Enhanced)
+            {
+                processesByName = Process.GetProcessesByName("GTA5_Enhanced");
+            }
+            else
+            {
+                processesByName = Process.GetProcessesByName("GTA5");
+            }
 
             if (processesByName.Length == 0)
             {
@@ -275,15 +291,13 @@ namespace GTA_Manager
 
                 if (MessageBox.Show(Language.MessageRemove, Language.TitleRemove, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    Config config = Config.Get();
-
                     List<string> list = selectedTab.listBoxDisabled.SelectedItems.OfType<string>().ToList();
 
                     foreach (string item in list)
                     {
                         File.Delete(directory + item + ".DISABLE");
-                        config.DisabledItems.Remove(selectedTab.Type, item);
-                        config.Save();
+                        Program.Config.DisabledItems.Remove(selectedTab.Type, item);
+                        Program.Config.Save();
 
                         if (Directory.GetFiles(directory) != null)
                         {
@@ -333,12 +347,10 @@ namespace GTA_Manager
 
         private void comboBoxLang_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            Config config = Config.Get();
-
-            if (config.Settings.Language != comboBoxLang.SelectedIndex)
+            if (Program.Config.Settings.Language != comboBoxLang.SelectedIndex)
             {
-                config.Settings.Language = comboBoxLang.SelectedIndex;
-                config.Save();
+                Program.Config.Settings.Language = comboBoxLang.SelectedIndex;
+                Program.Config.Save();
 
                 MessageBox.Show(Language.MessageRestart, Language.TitleRestart, MessageBoxButtons.OK);
             }
@@ -346,11 +358,9 @@ namespace GTA_Manager
 
         private void comboBoxMode_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            Config config = Config.Get();
-
             int num = 0;
 
-            if (!config.Settings.Online)
+            if (!Program.Config.Settings.Online)
             {
                 num = 1;
             }
@@ -360,7 +370,16 @@ namespace GTA_Manager
                 return;
             }
 
-            Process[] processesByName = Process.GetProcessesByName("GTA5");
+            Process[] processesByName;
+
+            if (Program.Config.Settings.Enhanced)
+            {
+                processesByName = Process.GetProcessesByName("GTA5_Enhanced");
+            }
+            else
+            {
+                processesByName = Process.GetProcessesByName("GTA5");
+            }
 
             if (processesByName.Length == 0)
             {
@@ -370,18 +389,18 @@ namespace GTA_Manager
                     bool @checked = checkBoxRage.Checked;
                     checkBoxRage.Checked = false;
                     checkBoxRage.Enabled = false;
-                    config.Settings.Rage = @checked;
-                    config.Settings.Online = true;
+                    Program.Config.Settings.Rage = @checked;
+                    Program.Config.Settings.Online = true;
                 }
                 else
                 {
                     Launcher.enableMods();
                     checkBoxRage.Enabled = true;
-                    checkBoxRage.Checked = config.Settings.Rage;
-                    config.Settings.Online = false;
+                    checkBoxRage.Checked = Program.Config.Settings.Rage;
+                    Program.Config.Settings.Online = false;
                 }
 
-                config.Save();
+                Program.Config.Save();
             }
             else
             {
@@ -400,7 +419,15 @@ namespace GTA_Manager
 
         private void MainUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Process[] processesByName = Process.GetProcessesByName("GTA5");
+            Process[] processesByName;
+
+            if (Program.Config.Settings.Enhanced)
+            {
+                processesByName = Process.GetProcessesByName("GTA5_Enhanced");
+            } else
+            {
+                processesByName = Process.GetProcessesByName("GTA5");
+            }
 
             if (processesByName.Length == 0)
             {
@@ -414,21 +441,28 @@ namespace GTA_Manager
 
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
-            Config config = Config.Get();
-
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
-            openFileDialog.InitialDirectory = config.Settings.Directory;
-            openFileDialog.Filter = "GTA Executable |GTA5.exe";
+            openFileDialog.InitialDirectory = Program.Config.Settings.Directory;
+            openFileDialog.Filter = "GTA Executable |GTA5.exe;GTA5_Enhanced.exe";
 
             DialogResult dialogResult = openFileDialog.ShowDialog();
 
             if (dialogResult == DialogResult.OK)
             {
-                string directory = openFileDialog.FileName.Replace("GTA5.exe", "");
+                string directory;
 
-                config.Settings.Directory = directory;
-                config.Save();
+                if (openFileDialog.FileName.EndsWith("GTA5_Enhanced.exe"))
+                {
+                    directory = openFileDialog.FileName.Replace("GTA5_Enhanced.exe", "");
+                    Program.Config.Settings.Enhanced = true;
+                } else
+                {
+                    directory = openFileDialog.FileName.Replace("GTA5.exe", "");
+                }
+
+                Program.Config.Settings.Directory = directory;
+                Program.Config.Save();
 
                 textBoxDirectory.Text = directory;
                 textBoxDirectory.ForeColor = Color.Black;

@@ -48,6 +48,7 @@ namespace GTA_Manager
         public void Save()
         {
             File.WriteAllText(CONFIG, JsonConvert.SerializeObject(this, Formatting.Indented));
+            Program.Config = this;
         }
     }
     public enum Type
@@ -64,6 +65,7 @@ namespace GTA_Manager
     {
         public string Directory { get; set; }
         public bool First { get; set; } = true;
+        public bool Enhanced { get; set; } = false;
         public int Language { get; set; } = 0;
         public bool Online { get; set; } = false;
         public bool Rage { get; set; } = false;
@@ -135,22 +137,22 @@ namespace GTA_Manager
             switch (type)
             {
                 case Type.ASI:
-                    if (!ASI.Contains(name)) { ASI.Remove(name); }
+                    if (ASI.Contains(name)) { ASI.Remove(name); }
                     break;
                 case Type.DOTNET:
-                    if (!DOTNET.Contains(name)) { DOTNET.Remove(name); }
+                    if (DOTNET.Contains(name)) { DOTNET.Remove(name); }
                     break;
                 case Type.LUA:
-                    if (!LUA.Contains(name)) { LUA.Remove(name); }
+                    if (LUA.Contains(name)) { LUA.Remove(name); }
                     break;
                 case Type.LUALEGACY:
-                    if (!LUALEGACY.Contains(name)) { LUALEGACY.Remove(name); }
+                    if (LUALEGACY.Contains(name)) { LUALEGACY.Remove(name); }
                     break;
                 case Type.LSPDFR:
-                    if (!LSPDFR.Contains(name)) { LSPDFR.Remove(name); }
+                    if (LSPDFR.Contains(name)) { LSPDFR.Remove(name); }
                     break;
                 case Type.RAGE:
-                    if (!RAGE.Contains(name)) { RAGE.Remove(name); }
+                    if (RAGE.Contains(name)) { RAGE.Remove(name); }
                     break;
             }
         }
