@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Policy;
 
 namespace GTA_Manager
 {
@@ -34,7 +35,16 @@ namespace GTA_Manager
             {
                 ProcessStartInfo processStartInfo = new ProcessStartInfo();
                 processStartInfo.WorkingDirectory = path;
-                processStartInfo.FileName = "GTAVLauncher.exe";
+
+                if (Program.Config.Settings.Enhanced)
+                {
+                    processStartInfo.FileName = "GTAV_Enhanced.exe";
+                }
+                else
+                {
+                    processStartInfo.FileName = "GTAVLauncher.exe";
+                }
+                
                 Process.Start(processStartInfo);
             }
         }
