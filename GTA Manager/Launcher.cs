@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Security.Policy;
+using System.Windows.Forms;
 
 namespace GTA_Manager
 {
@@ -9,7 +10,9 @@ namespace GTA_Manager
     {
         public static void launch(bool online, bool rage)
         {
-            string path = Program.Config.Settings.Directory;
+            Config config = Config.Get();
+
+            string path = config.Settings.Directory;
 
             if (rage && !online)
             {
@@ -21,7 +24,7 @@ namespace GTA_Manager
             else if (new FileInfo(path + "steam_api64.dll").Exists || new FileInfo(path + "steam_api.dll").Exists)
             {
                 Uri uri;
-                if (Program.Config.Settings.Enhanced)
+                if (config.Settings.Enhanced)
                 {
                     uri = new Uri("steam://rungameid/3240220");
                 } else
@@ -36,7 +39,7 @@ namespace GTA_Manager
                 ProcessStartInfo processStartInfo = new ProcessStartInfo();
                 processStartInfo.WorkingDirectory = path;
 
-                if (Program.Config.Settings.Enhanced)
+                if (config.Settings.Enhanced)
                 {
                     processStartInfo.FileName = "GTAV_Enhanced.exe";
                 }
@@ -51,7 +54,7 @@ namespace GTA_Manager
 
         public static void enableMods()
         {
-            string path = Program.Config.Settings.Directory;
+            string path = Config.Get().Settings.Directory;
 
             string text = path + "dinput8.dll.DISABLE";
 
@@ -83,7 +86,7 @@ namespace GTA_Manager
 
         public static void enableAllMods()
         {
-            string path = Program.Config.Settings.Directory;
+            string path = Config.Get().Settings.Directory;
 
             string text = path + "dinput8.dll.DISABLE";
 
@@ -128,7 +131,7 @@ namespace GTA_Manager
 
                     if (check)
                     {
-                        if (!Program.Config.DisabledItems.Contains(type, destFileName.Replace(directory, "")))
+                        if (!Config.Get().DisabledItems.Contains(type, destFileName.Replace(directory, "")))
                         {
                             File.Move(file, destFileName);
                         }
@@ -143,7 +146,8 @@ namespace GTA_Manager
 
         public static void enableMod(Type type, string fileName)
         {
-            string path = Program.Config.Settings.Directory;
+            fileName = fileName + ".DISABLE";
+            string path = Config.Get().Settings.Directory;
 
             if (type.Equals(Type.ASI))
             {
@@ -170,12 +174,12 @@ namespace GTA_Manager
                 fileName = path + @"Plugins\LSPDFR\" + fileName;
             }
 
-            File.Move(fileName + ".DISABLE", fileName.Replace(".DISABLE", ""));
+            File.Move(fileName, fileName.Replace(".DISABLE", ""));
         }
 
         public static void disableMods()
         {
-            string path = Program.Config.Settings.Directory;
+            string path = Config.Get().Settings.Directory;
 
             string[] args1 = new string[] { ".asi" };
 
@@ -199,7 +203,7 @@ namespace GTA_Manager
 
         public static void disableAllMods()
         {
-            string path = Program.Config.Settings.Directory;
+            string path = Config.Get().Settings.Directory;
 
             string text = path + "dinput8.dll";
 
@@ -221,7 +225,7 @@ namespace GTA_Manager
 
         public static void disableMod(Type type, string fileName)
         {
-            string path = Program.Config.Settings.Directory;
+            string path = Config.Get().Settings.Directory;
 
             if (type.Equals(Type.ASI))
             {
@@ -271,7 +275,7 @@ namespace GTA_Manager
                         {
                             if (check)
                             {
-                                if (Program.Config.DisabledItems.Contains(type, file.Replace(directory, "")))
+                                if (Config.Get().DisabledItems.Contains(type, file.Replace(directory, "")))
                                 {
                                     File.Move(file, file + ".DISABLE");
                                 }

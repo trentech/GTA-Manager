@@ -9,19 +9,15 @@ namespace GTA_Manager
 {
     static class Program
     {
-        public static Config Config;
-
         [STAThread]
         private static void Main()
         {
-            Config = Config.Get();
-
             Thread.CurrentThread.CurrentCulture = new CultureInfo(getRegionCode());
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(getRegionCode());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (Config.Settings.First)
+            if (Config.Get().Settings.First)
             {
                 StartUI startUI = new StartUI();
                 CenterToScreen(startUI);
@@ -42,7 +38,7 @@ namespace GTA_Manager
 
         public static string getRegionCode()
         {
-            switch (Config.Settings.Language)
+            switch (Config.Get().Settings.Language)
             {
                 case 0:
                     return "en-US";

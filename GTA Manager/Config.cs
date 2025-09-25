@@ -48,7 +48,6 @@ namespace GTA_Manager
         public void Save()
         {
             File.WriteAllText(CONFIG, JsonConvert.SerializeObject(this, Formatting.Indented));
-            Program.Config = this;
         }
     }
     public enum Type

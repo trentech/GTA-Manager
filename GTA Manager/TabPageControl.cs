@@ -30,7 +30,7 @@ namespace GTA_Manager
 
             Text = Type.ToString();
 
-            string directoryName = Program.Config.Settings.Directory;
+            string directoryName = Config.Get().Settings.Directory;
 
             switch (Type)
             {
@@ -107,7 +107,7 @@ namespace GTA_Manager
                 {
                     if (fileName.Contains(extension))
                     {
-                        if (Program.Config.DisabledItems.Contains(Type, file.Replace(Path, "")))
+                        if (Config.Get().DisabledItems.Contains(Type, file.Replace(Path, "")))
                         {
                             try
                             {
@@ -153,9 +153,10 @@ namespace GTA_Manager
 
             if (list != null)
             {
+                Config config = Config.Get();
                 Process[] processesByName;
 
-                if (Program.Config.Settings.Enhanced)
+                if (config.Settings.Enhanced)
                 {
                     processesByName = Process.GetProcessesByName("GTA5_Enhanced");
                 }
@@ -168,10 +169,10 @@ namespace GTA_Manager
                 {
                     foreach (string item in list)
                     {
-                        Program.Config.DisabledItems.Remove(Type, item);
-                        Program.Config.Save();
+                        config.DisabledItems.Remove(Type, item);
+                        config.Save();
 
-                        if (Type.Equals(Type.ASI) && !Program.Config.Settings.Online)
+                        if (Type.Equals(Type.ASI) && !config.Settings.Online)
                         {
                             Launcher.enableMod(Type, item);
                         }
@@ -199,9 +200,10 @@ namespace GTA_Manager
 
             if (list != null)
             {
+                Config config = Config.Get();
                 Process[] processesByName;
 
-                if (Program.Config.Settings.Enhanced)
+                if (config.Settings.Enhanced)
                 {
                     processesByName = Process.GetProcessesByName("GTA5_Enhanced");
                 }
@@ -214,9 +216,9 @@ namespace GTA_Manager
                 {
                     foreach (string item in list)
                     {
-                        Program.Config.DisabledItems.Add(Type, item);
+                        config.DisabledItems.Add(Type, item);
 
-                        Program.Config.Save();
+                        config.Save();
 
                         Launcher.disableMod(Type, item);
 
